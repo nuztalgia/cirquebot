@@ -18,7 +18,7 @@ FILENAME_SPANK_2 = 'assets/spank2.png'
 REGEX_ESNIPE = compile(r'^\s*ple*a*(s|z)+e?\s*e(dit)?-?(sn|ns)e?(ip|pi)e?\\?\s*$', IGNORECASE)
 REGEX_RSNIPE = compile(r'^\s*ple*a*(s|z)+e?\s*r(eaction)?-?(sn|ns)e?(ip|pi)e?\\?\s*$', IGNORECASE)
 REGEX_HELP = compile(r'^\s*\!cb\s*h[ea]lp\s*$', IGNORECASE)
-REGEX_QWEPHESS = compile(r'^(.*?(\bkephess\b)[^$]*)$', IGNORECASE)
+REGEX_QWEPHESS = compile(r'^(.*?(([^a-zA-Z0-9_:]|^)kephess\b)[^$]*)$', IGNORECASE)
 REGEX_SNIPE = compile(r'^\s*ple*a*(s|z)+e?\s*(sn|ns)e?(ip|pi)e?\\?\s*$', IGNORECASE)
 REGEX_SPANK_EMOJI = compile(r'^\s*(<:spank[a-z]*:740455662856831007>\s*)+$', IGNORECASE)
 
@@ -83,9 +83,15 @@ class EasterEggs(commands.Cog):
         message_blocks = split("kephess", message.content, flags=IGNORECASE)
         kephess_index = message.content.lower().find("kephess")
         kephess_string = message.content[kephess_index:(kephess_index + len("kephess"))]
-        qw = "Qw" if kephess_string[0].isupper() else "qw"
+        if kephess_string[0].isupper() and kephess_string[1].isupper():
+            qw = "QW"
+        elif kephess_string[0].isupper():
+            qw = "Qw"
+        else:
+            qw = "qw"
         new_message = message_blocks[0] + f"~~{kephess_string}~~ {qw}{kephess_string[1:]}" + message_blocks[1]
-        await message.reply(new_message, mention_author=False)
+        embed = create_basic_embed(new_message)
+        await message.reply(embed=embed, mention_author=False)
 
     @staticmethod
     async def handle_bonk_command(message, sunder=False):

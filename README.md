@@ -73,3 +73,15 @@ You should see output like this:
 [Configuration: PROD] Logging in...
 Successfully logged in as: CirqueBotTest#1280
 ```
+
+Uploading Docker Image
+----------------------
+
+Save the image:
+
+```
+docker save -o cirquebot.tar docker.io/library/cirquebot
+scp cirquebot.tar bot-host
+ssh bot-host
+docker load cirquebot.tar
+```
