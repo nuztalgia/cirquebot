@@ -64,7 +64,7 @@ docker run -itv `cygpath -d $PWD`:/usr/src/app cirquebot
 
 ```
 docker build -t cirquebot .
-docker run -itv .:/usr/src/app cirquebot
+docker run -itd -v /usr/src/cirquebot/data:/usr/src/app/data -v /usr/src/cirquebot:/usr/src/app cirquebot
 ```
 
 You should see output like this:

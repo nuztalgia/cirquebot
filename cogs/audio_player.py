@@ -2,6 +2,8 @@ from discord import FFmpegPCMAudio
 from discord.ext import commands
 from lib.embeds import create_basic_embed, EMOJI_ERROR, EMOJI_SUCCESS
 from youtube_dl import YoutubeDL
+import urllib.request
+import os.path
 
 TEXT_SUCCESS_FORMAT = '{0} \u200B \u200B Now playing **{1}** in **{2}**!'  # args: emoji, title, channel name
 
@@ -10,9 +12,7 @@ YTDL_OPTIONS = {
     'quiet': True,
 }
 
-
 class AudioPlayer(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
 
@@ -98,8 +98,15 @@ class AudioPlayer(commands.Cog):
         # noinspection PyBroadException
         try:
             loop = self.bot.loop or asyncio.get_event_loop()
-            data = await loop.run_in_executor(None, lambda: YoutubeDL(YTDL_OPTIONS).extract_info(url, download=False))
-            audio_source = FFmpegPCMAudio(data['url'], options=f'-ss {skip_seconds}')
+            videoId = url.split("v=")[1]
+            videoCache = 'data/' + videoId + '.webm'
+
+            if not os.path.isfile('data/' + videoId + '.webm'):
+                print(f'Downloading and caching video for {videoId} to {videoCache}')
+                data = await loop.run_in_executor(None, lambda: YoutubeDL(YTDL_OPTIONS).extract_info(url, download=False))
+                await loop.run_in_executor(None, lambda: urllib.request.urlretrieve(data['url'], videoCache))
+
+            audio_source = FFmpegPCMAudio(videoCache, options=f'-ss {skip_seconds}')
             voice_client = await voice_channel.connect()
             voice_client.play(audio_source)
             await text_channel.send(embed=create_basic_embed(success_text))
