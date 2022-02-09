@@ -1,6 +1,6 @@
 from asyncio import Lock
 from datetime import datetime, timedelta, timezone
-from discord import HTTPException, Message
+from discord import HTTPException, Message, AuditLogAction
 from discord.ext import commands
 from lib.embeds import create_authored_embed, create_basic_embed
 from lib.utils import get_message_link_string
@@ -40,7 +40,10 @@ class Sniper(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        if not message.author.bot:
+        async for entry in message.guild.audit_logs(limit=1,action=AuditLogAction.message_delete,after=datetime.now() - timedelta(seconds=5)):
+            audit_entry = entry
+
+        if not message.author.bot and (not audit_entry or audit_entry.target != message.author):
             await Sniper.add_to_cache(self.deleted_message_cache, self.deleted_message_cache_lock,
                                       channel=message.channel,
                                       user=message.author,
