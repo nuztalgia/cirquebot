@@ -1,4 +1,4 @@
-from discord import FFmpegPCMAudio
+from discord import FFmpegPCMAudio, PCMVolumeTransformer
 from discord.ext import commands
 from lib.embeds import create_basic_embed, EMOJI_ERROR, EMOJI_SUCCESS
 from youtube_dl import YoutubeDL
@@ -49,14 +49,28 @@ class AudioPlayer(commands.Cog):
         audio_emoji = '❄'
         audio_title = 'Let It Go'
         audio_url = 'https://www.youtube.com/watch?v=FnpJBkAMk44'
-        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=59)
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=59, volume=0.1)
+
+    @commands.command()
+    async def squidgame(self, ctx):
+        audio_emoji = '❄'
+        audio_title = 'Squid Game OST - Pink Soldiers'
+        audio_url = 'https://www.youtube.com/watch?v=v9NQYKv2rTg'
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=1, volume=0.15)
+
+    @commands.command()
+    async def chase(self, ctx):
+        audio_emoji = '❄'
+        audio_title = 'Horror Chase Music - Scary Movie Intense Suspense Instrumental Royalty Free'
+        audio_url = 'https://www.youtube.com/watch?v=nEuXiJ-d2YM&t=24'
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=22, volume=0.15)
 
     @commands.command()
     async def nyancat(self, ctx):
         audio_emoji = '🐱'
         audio_title = 'Nyan Cat'
         audio_url = 'https://www.youtube.com/watch?v=QH2-TGUlwu4'
-        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url)
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, volume=0.1)
 
     @commands.command()
     async def rickroll(self, ctx):
@@ -77,7 +91,7 @@ class AudioPlayer(commands.Cog):
         await self.disconnect_voice_clients()
         await ctx.channel.send(embed=create_basic_embed('Successfully stopped all audio playback.', EMOJI_SUCCESS))
 
-    async def handle_audio_command(self, ctx, audio_emoji, audio_title, audio_url, skip_seconds=0):
+    async def handle_audio_command(self, ctx, audio_emoji, audio_title, audio_url, skip_seconds=0, volume=0.25):
         text_channel = ctx.channel
         if len(ctx.message.mentions) == 1:
             user = ctx.message.mentions[0]
@@ -86,7 +100,7 @@ class AudioPlayer(commands.Cog):
                 success_text = TEXT_SUCCESS_FORMAT.format(audio_emoji, audio_title, voice_channel.name)
                 async with text_channel.typing():
                     await self.disconnect_voice_clients()
-                    await self.play_youtube_audio(audio_url, voice_channel, text_channel, success_text, skip_seconds)
+                    await self.play_youtube_audio(audio_url, voice_channel, text_channel, success_text, skip_seconds, volume)
             else:
                 embed = create_basic_embed(f'**{user.mention}** is not currently in a voice channel.', EMOJI_ERROR)
                 await text_channel.send(embed=embed)
@@ -94,7 +108,7 @@ class AudioPlayer(commands.Cog):
             embed = create_basic_embed('Please specify exactly one person to receive the audio.', EMOJI_ERROR)
             await text_channel.send(embed=embed)
 
-    async def play_youtube_audio(self, url, voice_channel, text_channel, success_text, skip_seconds):
+    async def play_youtube_audio(self, url, voice_channel, text_channel, success_text, skip_seconds, volume):
         # noinspection PyBroadException
         try:
             loop = self.bot.loop or asyncio.get_event_loop()
@@ -108,7 +122,7 @@ class AudioPlayer(commands.Cog):
 
             audio_source = FFmpegPCMAudio(videoCache, options=f'-ss {skip_seconds}')
             voice_client = await voice_channel.connect()
-            voice_client.play(audio_source)
+            voice_client.play(PCMVolumeTransformer(audio_source, volume=volume))
             await text_channel.send(embed=create_basic_embed(success_text))
         except Exception as exception:
             print(exception)
