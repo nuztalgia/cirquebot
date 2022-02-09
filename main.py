@@ -50,6 +50,11 @@ async def on_ready():
     print(f'Successfully logged in as: {bot.user}')
     await bot.change_presence(activity=Game(name=BOT_STATUS))
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
+    raise error
 
 if __name__ == '__main__':
     config_arg = '' if len(argv) != 2 else argv[1].upper()
