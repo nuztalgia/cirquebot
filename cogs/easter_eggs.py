@@ -49,7 +49,7 @@ class EasterEggs(commands.Cog):
         if message.author.id == self.bot.user.id:
             return
         elif not message.guild:
-            await EasterEggs.respond_to_dm(message)
+            await EasterEggs.respond_to_dm(message, get_prefix(self.bot, message))
         elif REGEX_ESNIPE.match(message.content):
             await self.bot.get_cog('Sniper').editsnipe(msg=message)
         elif REGEX_RSNIPE.match(message.content):
@@ -65,13 +65,15 @@ class EasterEggs(commands.Cog):
             await EasterEggs.handle_spank_command(message, bot=self.bot)
 
     @staticmethod
-    async def respond_to_dm(message):
+    async def respond_to_dm(message, prefix):
         log(f'Received a DM from {message.author.name}#{message.author.discriminator}:')
         for line in message.content.split('\n'):
             log(line, indent=1)
 
         if REGEX_HELP.match(message.content):
             await message.channel.send(embed=create_basic_embed(TEXT_DM_HELP, EMOJI_ERROR))
+        elif message.content.startswith(prefix) or message.content.startswith("!"):
+            return
         else:
             embed = create_basic_embed(TEXT_DM_RESPONSE)
             file = File(FILENAME_PUSHEEN, 'image.gif')
