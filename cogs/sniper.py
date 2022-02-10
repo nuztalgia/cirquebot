@@ -40,6 +40,9 @@ class Sniper(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
+        if message.guild is None:
+            return
+
         async for entry in message.guild.audit_logs(limit=1,action=AuditLogAction.message_delete,after=datetime.now() - timedelta(seconds=5)):
             audit_entry = entry
 
