@@ -8,6 +8,8 @@ from lib.prefixes import *
 from lib.utils import log
 from re import compile, split, IGNORECASE
 
+CLOWNS_GUILD_ID = 722929163291328653
+
 FILENAME_BONK = 'assets/bonk.png'
 FILENAME_MASK = 'assets/mask.png'
 FILENAME_PUSHEEN = 'assets/pusheen.gif'
@@ -87,6 +89,9 @@ class EasterEggs(commands.Cog):
 
     @staticmethod
     async def fix_qwephess(message):
+        if not message.guild or message.guild.id != CLOWNS_GUILD_ID:
+            return
+
         message_blocks = split("kephess", message.content, flags=IGNORECASE)
         kephess_index = message.content.lower().find("kephess")
         kephess_string = message.content[kephess_index:(kephess_index + len("kephess"))]
