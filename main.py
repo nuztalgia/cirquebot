@@ -38,7 +38,6 @@ def initialize_bot(config):
         return BOT_TOKEN_PROD
 
     # Extensions that should only be loaded for DEV configuration.
-    bot.load_extension('cogs.events')
     bot.load_extension('cogs.nicknames')
     bot.load_extension('cogs.permissions')
 
