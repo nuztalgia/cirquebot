@@ -14,6 +14,7 @@ FILENAME_PUSHEEN = 'assets/pusheen.gif'
 FILENAME_SUNDER = 'assets/sunder.png'
 FILENAME_SPANK_1 = 'assets/spank1.png'
 FILENAME_SPANK_2 = 'assets/spank2.png'
+FILENAME_GANGBANG = 'assets/gangbang.png'
 
 REGEX_ESNIPE = compile(r'^\s*ple*a*(s|z)+e?\s*e(dit)?-?(sn|ns)e?(ip|pi)e?\\?\s*$', IGNORECASE)
 REGEX_RSNIPE = compile(r'^\s*ple*a*(s|z)+e?\s*r(eaction)?-?(sn|ns)e?(ip|pi)e?\\?\s*$', IGNORECASE)
@@ -43,6 +44,10 @@ class EasterEggs(commands.Cog):
     @commands.command()
     async def spank(self, ctx):
         await EasterEggs.handle_spank_command(ctx.message)
+
+    @commands.command()
+    async def gangbang(self, ctx):
+        await EasterEggs.handle_gangbang_command(ctx.message)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -120,6 +125,26 @@ class EasterEggs(commands.Cog):
             bonk_image.save(image_bytes, 'png')
             image_bytes.seek(0)
             await message.channel.send(file=File(fp=image_bytes, filename='bonk.png'))
+
+    @staticmethod
+    async def handle_gangbang_command(message, bot=None):
+        if len(message.mentions) != 1:
+            embed = create_basic_embed('Please specify exactly one person to gangbang.', EMOJI_ERROR)
+            await message.channel.send(embed=embed)
+            return
+
+        async with message.channel.typing():
+            bonk_image = Image.open(FILENAME_GANGBANG)
+            bangee_image = await EasterEggs.get_avatar_image(message.mentions[0])
+
+            if bangee_image:
+                bonk_image = EasterEggs.process_image(
+                    bangee_image, new_size=(75, 75), apply_mask=True, bg_image=bonk_image, position=(658, 386))
+
+        with BytesIO() as image_bytes:
+            bonk_image.save(image_bytes, 'png')
+            image_bytes.seek(0)
+            await message.channel.send(file=File(fp=image_bytes, filename='bang.png'))
 
     @staticmethod
     async def handle_spank_command(message, bot=None):
