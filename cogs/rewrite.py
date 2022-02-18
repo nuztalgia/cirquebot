@@ -1,4 +1,6 @@
+import discord
 from discord.ext import commands
+from discord.utils import find
 from lib.embeds import *
 from lib.prefixes import get_prefix
 from lib.utils import fetch_message, get_channel, TEXT_INVALID_MESSAGE_LINK
@@ -40,7 +42,8 @@ class Rewrite(commands.Cog):
 
     @commands.command(aliases=['rw'])
     async def rewrite(self, ctx, command: str = None, *args):
-        if not ctx.author.guild_permissions.administrator:
+        clowncil = find(lambda r: r.name == 'Clowncil', ctx.message.guild.roles)
+        if not ctx.author.guild_permissions.administrator and not clowncil in ctx.author.roles:
             await ctx.send(embed=create_basic_embed("Sorry, you aren't authorized to use that command!", EMOJI_ERROR))
         elif command == 'post' and len(args) == 2:
             await Rewrite.post(ctx, args[0], args[1])
@@ -57,13 +60,16 @@ class Rewrite(commands.Cog):
         message = await fetch_message(ctx, message_link)
         channel = get_channel(ctx, channel_str)
         bot_member = ctx.guild.get_member(ctx.bot.user.id)
+        am = discord.AllowedMentions(
+            roles=False,
+        )
 
         if not channel:
             await ctx.send(embed=create_basic_embed('Please specify a valid channel!', EMOJI_ERROR))
         elif not channel.permissions_for(bot_member).send_messages:
             await ctx.send(embed=create_basic_embed("I'm not allowed to post in that channel!", EMOJI_ERROR))
         elif await Rewrite.check_postable_message(ctx, message):
-            await channel.send(message.content)
+            await channel.send(message.content, allowed_mentions=am)
             await ctx.send(
                 embed=create_basic_embed(f'Message successfully posted to {channel.mention}.', EMOJI_SUCCESS))
 
