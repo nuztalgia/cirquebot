@@ -26,6 +26,8 @@ REGEX_SNIPE = compile(r'^\s*ple*a*(s|z)+e?\s*(sn|ns)e?(ip|pi)e?\\?\s*$', IGNOREC
 REGEX_SPANK_EMOJI = compile(r'^\s*(<:spank[a-z]*:740455662856831007>\s*)+$', IGNORECASE)
 
 TEXT_DM_HELP = 'Sorry, my \u200b `help` \u200b command is disabled in DMs!'
+TEXT_DM_CLOWNCIL = 'Hello, friend! \u200b My name is CirqueBot.\nSorry, but I don\'t want to talk about that.\nBut thank ' \
+                   'you for sending me a message!\nI hope you have an eventful day! \u200b <:hypersLove:740457258395107380>'
 TEXT_DM_RESPONSE = 'Hello, friend! \u200b My name is CirqueBot.\nI don\'t understand what you\'re saying.\nBut thank ' \
                    'you for sending me a message!\nI hope you have a nice day! \u200b <:hypersLove:740457258395107380>'
 
@@ -79,6 +81,11 @@ class EasterEggs(commands.Cog):
 
         if REGEX_HELP.match(message.content):
             await message.channel.send(embed=create_basic_embed(TEXT_DM_HELP, EMOJI_ERROR))
+        elif "shadow clowncil" in message.content:
+            embed = create_basic_embed(TEXT_DM_CLOWNCIL)
+            file = File(FILENAME_PUSHEEN, 'image.gif')
+            embed.set_image(url='attachment://image.gif')
+            await message.channel.send(embed=embed, file=file)
         elif message.content.startswith(prefix) or message.content.startswith("!"):
             return
         else:
