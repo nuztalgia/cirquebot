@@ -7,6 +7,7 @@ from lib.utils import fetch_message, get_channel, TEXT_INVALID_MESSAGE_LINK
 
 TEXT_FORMAT_TEMPLATE = 'Copy and paste the following template:\n```json\n{0}\n```'  # arg: message text
 TEXT_ONLY_HUMANS = 'I can only post messages that were written by humans!'
+TEXT_TOO_LONG = 'Discord only allows me to post messages up to 2000 characters long!'
 
 
 class Rewrite(commands.Cog):
@@ -86,7 +87,7 @@ class Rewrite(commands.Cog):
 
         if (await Rewrite.check_editable_message(ctx, old_message)
                 and await Rewrite.check_postable_message(ctx, new_message)):
-            await old_message.edit(content=new_message.content)
+            await old_message.edit(content=new_message.content, embed=None)
             await ctx.send(embed=create_basic_embed(
                 f'Message successfully edited. [Check it out!]({old_message_link})', EMOJI_SUCCESS))
 
@@ -96,6 +97,8 @@ class Rewrite(commands.Cog):
             await ctx.send(embed=create_basic_embed(TEXT_INVALID_MESSAGE_LINK, EMOJI_ERROR))
         elif message.author.bot:
             await ctx.send(embed=create_basic_embed(TEXT_ONLY_HUMANS, EMOJI_ERROR))
+        elif len(message.content) >= 2000:
+            await ctx.send(embed=create_basic_embed(TEXT_TOO_LONG, EMOJI_ERROR))
         else:
             return True
 
@@ -105,9 +108,9 @@ class Rewrite(commands.Cog):
             await ctx.send(embed=create_basic_embed(TEXT_INVALID_MESSAGE_LINK, EMOJI_ERROR))
         elif message.author.id != ctx.bot.user.id:
             await ctx.send(embed=create_basic_embed('I can only edit messages that I posted!', EMOJI_ERROR))
-        elif message.embeds:
-            await ctx.send(
-                embed=create_basic_embed("I can only edit messages that don't have any embeds!", EMOJI_ERROR))
+        # elif message.embeds:
+        #     await ctx.send(
+        #         embed=create_basic_embed("I can only edit messages that don't have any embeds!", EMOJI_ERROR))
         else:
             return True
 
