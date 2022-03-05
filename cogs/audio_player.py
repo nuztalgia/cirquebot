@@ -87,6 +87,20 @@ class AudioPlayer(commands.Cog):
         await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=43)
 
     @commands.command()
+    async def tunak(self, ctx):
+        audio_emoji = '🚑'
+        audio_title = 'Tunak Tunak Tun'
+        audio_url = 'https://www.youtube.com/watch?v=eZ2PtEx9-ls'
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=27, volume=0.12)
+
+    @commands.command()
+    async def saltyballs(self, ctx):
+        audio_emoji = '🍫'
+        audio_title = 'Chocolate Salty Balls (P.S. I Love You)'
+        audio_url = 'https://www.youtube.com/watch?v=bB59Ow8hSyY'
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=47, volume=0.08)
+
+    @commands.command()
     async def stopaudio(self, ctx):
         await self.disconnect_voice_clients()
         await ctx.channel.send(embed=create_basic_embed('Successfully stopped all audio playback.', EMOJI_SUCCESS))
