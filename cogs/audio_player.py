@@ -101,6 +101,13 @@ class AudioPlayer(commands.Cog):
         await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=47, volume=0.08)
 
     @commands.command()
+    async def doubletrouble(self, ctx):
+        audio_emoji = '<:surprisedPika:741269041657806879>'
+        audio_title = 'TEAM ROCKET (Double Trouble) - Pokémon METAL cover by Jonathan Young'
+        audio_url = 'https://www.youtube.com/watch?v=Oc_ifA4lGIo'
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=14, volume=0.03)
+
+    @commands.command()
     async def stopaudio(self, ctx):
         await self.disconnect_voice_clients()
         await ctx.channel.send(embed=create_basic_embed('Successfully stopped all audio playback.', EMOJI_SUCCESS))
