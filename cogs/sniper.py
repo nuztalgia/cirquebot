@@ -43,10 +43,18 @@ class Sniper(commands.Cog):
         if message.guild is None:
             return
 
-        async for entry in message.guild.audit_logs(limit=1,action=AuditLogAction.message_delete,after=datetime.now() - timedelta(seconds=5)):
-            audit_entry = entry
+        audit_entry = None
 
-        if not message.author.bot and (not audit_entry or audit_entry.target != message.author):
+        async for entry in message.guild.audit_logs(limit=1,action=AuditLogAction.message_delete):
+            if entry.created_at >= (datetime.now() - timedelta(seconds=300)):
+                audit_entry = entry
+            else:
+                print(f"on_message_delete failed time check {entry.created_at} < {(datetime.now() - timedelta(seconds=300))}: {entry}")
+
+        if audit_entry:
+            print(f"on_message_delete audit_entry: {audit_entry}, {audit_entry.target}, {message.author}")
+
+        if not message.author.bot and (not audit_entry or audit_entry.target.id != message.author.id):
             await Sniper.add_to_cache(self.deleted_message_cache, self.deleted_message_cache_lock,
                                       channel=message.channel,
                                       user=message.author,
