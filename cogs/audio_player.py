@@ -73,6 +73,28 @@ class AudioPlayer(commands.Cog):
         await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, volume=0.1)
 
     @commands.command()
+    async def afrocircus(self, ctx):
+        audio_emoji = '🕺'
+        audio_title = 'Afro Circus/ I Like To Move It'
+        audio_url = 'https://www.youtube.com/watch?v=slMub4NtrSk'
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=9)
+
+    @commands.command()
+    async def livinlavidaloca(self, ctx):
+        audio_emoji = '🕺'
+        audio_title = 'Livin\' La Vida Loca'
+        audio_url = 'https://www.youtube.com/watch?v=p47fEXGabaY'
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=2)
+
+    # Rick Roll -.-
+    @commands.command()
+    async def vidaloca(self, ctx):
+        audio_emoji = '🕺'
+        audio_title = 'Livin\' La Vida Loca'
+        audio_url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=43)
+
+    @commands.command()
     async def rickroll(self, ctx):
         audio_emoji = '🕺'
         audio_title = 'Never Gonna Give You Up'
