@@ -128,6 +128,20 @@ class AudioPlayer(commands.Cog):
         audio_title = 'TEAM ROCKET (Double Trouble) - Pokémon METAL cover by Jonathan Young'
         audio_url = 'https://www.youtube.com/watch?v=Oc_ifA4lGIo'
         await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=14, volume=0.03)
+        
+    @commands.command()
+    async def crimmis(self, ctx):
+        audio_emoji = '❄'
+        audio_title = 'Mariah Carey - All I Want For Christmas Is You (Official Video)'
+        audio_url = 'https://www.youtube.com/watch?v=yXQViqx6GMY'
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=2, volume=0.25)
+        
+    @commands.command()
+    async def spacejam(self, ctx):
+        audio_emoji = '🏀'
+        audio_title = 'Space Jam Theme Song'
+        audio_url = 'https://www.youtube.com/watch?v=J9FImc2LOr8'
+        await self.handle_audio_command(ctx, audio_emoji, audio_title, audio_url, skip_seconds=0, volume=0.25)
 
     @commands.command()
     async def stopaudio(self, ctx):
